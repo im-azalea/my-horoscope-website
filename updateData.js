@@ -1,20 +1,19 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+const API_KEY = process.env.RAPIDAPI_KEY;
 const zodiacSigns = [
-    "aries", "taurus", "gemini", "cancer", "leo", "virgo",
-    "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
+    "aries", "taurus", "gemini", "cancer", "leo", 
+    "virgo", "libra", "scorpio", "sagittarius", 
+    "capricorn", "aquarius", "pisces"
 ];
 
-const API_HOST = "best-daily-astrology-and-horoscope-api.p.rapidapi.com";
-const API_KEY = process.env.RAPIDAPI_KEY;
-
 async function fetchHoroscope(sign) {
-    const url = `https://${API_HOST}/api/Detailed-Horoscope/?zodiacSign=${sign}`;
+    const url = `https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=${sign}`;
     const options = {
         method: "GET",
         headers: {
-            "x-rapidapi-host": API_HOST,
+            "x-rapidapi-host": "best-daily-astrology-and-horoscope-api.p.rapidapi.com",
             "x-rapidapi-key": API_KEY
         }
     };
@@ -22,6 +21,7 @@ async function fetchHoroscope(sign) {
     try {
         const response = await fetch(url, options);
         const data = await response.json();
+        console.log(`Response for ${sign}:`, JSON.stringify(data, null, 2));  // Log response data
         return data.horoscope || "No data available";
     } catch (error) {
         console.error(`Error fetching horoscope for ${sign}:`, error);
@@ -29,15 +29,15 @@ async function fetchHoroscope(sign) {
     }
 }
 
-async function updateHoroscopeData() {
-    const horoscopeData = {};
+async function updateHoroscopes() {
+    const horoscopes = {};
 
-    for (const sign of zodiacSigns) {
-        horoscopeData[sign] = await fetchHoroscope(sign);
+    for (let sign of zodiacSigns) {
+        horoscopes[sign] = await fetchHoroscope(sign);
     }
 
-    fs.writeFileSync("data.json", JSON.stringify(horoscopeData, null, 2));
-    console.log("Horoscope data updated.");
+    fs.writeFileSync('data.json', JSON.stringify(horoscopes, null, 2));
+    console.log("Horoscope data updated successfully.");
 }
 
-updateHoroscopeData();
+updateHoroscopes();
