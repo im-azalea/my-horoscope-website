@@ -1,30 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Horoscope</title>
-  <style>
-    /* Styling dasar */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      padding: 20px;
-    }
-    #horoscope {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #fff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Horoscope</title>
 </head>
 <body>
-  <h1>Today's Horoscope: Leo</h1>
-  <div id="horoscope">Loading data...</div>
+    <h1>Today's Horoscope</h1>
+    <p id="horoscope">Loading...</p>
 
-  <!-- Memuat file JavaScript -->
-  <script src="script.js"></script>
+    <script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('horoscope').textContent = data.horoscope;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
 </body>
 </html>
