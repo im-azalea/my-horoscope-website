@@ -2,8 +2,8 @@ name: Update Horoscope Data
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Jalankan setiap hari pada pukul 00:00 UTC
-  workflow_dispatch:  # Bisa dijalankan manual
+    - cron: '0 0 * * *'  # Menjalankan setiap hari pada pukul 00:00 UTC
+  workflow_dispatch:  # Bisa dijalankan manual juga
 
 jobs:
   update:
@@ -59,14 +59,14 @@ jobs:
 
       - name: Commit and push changes
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}  # Token GitHub Anda disimpan di GitHub Secrets
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          git remote remove origin
-          git remote add origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git
+          git remote remove origin  # Menghapus remote yang lama
+          git remote add origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git  # Menambah remote dengan token
           git fetch origin main
           git checkout main
           git add data.json
-          git commit -m "Update horoscope data [skip ci]" || echo "No changes to commit"
+          git commit -m "Update horoscope data [skip ci]" || echo "No changes to commit"  # Menghindari error jika tidak ada perubahan
           git push origin main
