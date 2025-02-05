@@ -1,0 +1,35 @@
+name: Update Horoscope Data
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Jalankan setiap hari pada pukul 00:00 UTC
+  workflow_dispatch:  # Bisa dijalankan manual
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v16
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Run update script
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+        run: node updateData.js
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json
+          git commit -m "Update horoscope data [skip ci]" || echo "No changes to commit"
+          git push
