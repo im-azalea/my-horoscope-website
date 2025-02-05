@@ -5,23 +5,26 @@ on:
     - cron: '0 0 * * *'  # Menjalankan setiap hari pada pukul 00:00 UTC
   workflow_dispatch:  # Bisa dijalankan manual juga
 
+permissions:
+  contents: write  # Memberikan izin menulis ke repository
+
 jobs:
-  update:
+  update-data:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Menggunakan Node.js versi terbaru
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install node-fetch@2
 
-      - name: Run update script
+      - name: Fetch horoscope data
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
         run: |
@@ -29,7 +32,7 @@ jobs:
           const fetch = require('node-fetch');
           const fs = require('fs');
 
-          const zodiacSign = "leo";  // Ubah sesuai kebutuhan
+          const zodiacSign = "leo";  // Ganti sesuai kebutuhan
           const url = \`https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=\${zodiacSign}\`;
 
           const options = {
@@ -58,15 +61,11 @@ jobs:
           node updateData.js
 
       - name: Commit and push changes
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}  # Token GitHub Anda disimpan di GitHub Secrets
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          git remote remove origin  # Menghapus remote yang lama
-          git remote add origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git  # Menambah remote dengan token
-          git fetch origin main
-          git checkout main
           git add data.json
-          git commit -m "Update horoscope data [skip ci]" || echo "No changes to commit"  # Menghindari error jika tidak ada perubahan
-          git push origin main
+          git commit -m "Update horoscope data [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
