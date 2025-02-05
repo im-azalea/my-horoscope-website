@@ -4,18 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Horoscope</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Today's Horoscope</h1>
-    <p id="horoscope">Loading...</p>
+    <h1>Daily Horoscope</h1>
+    <label for="zodiac">Choose your Zodiac Sign:</label>
+    <select id="zodiac">
+        <option value="aries">Aries</option>
+        <option value="taurus">Taurus</option>
+        <option value="gemini">Gemini</option>
+        <option value="cancer">Cancer</option>
+        <option value="leo">Leo</option>
+        <option value="virgo">Virgo</option>
+        <option value="libra">Libra</option>
+        <option value="scorpio">Scorpio</option>
+        <option value="sagittarius">Sagittarius</option>
+        <option value="capricorn">Capricorn</option>
+        <option value="aquarius">Aquarius</option>
+        <option value="pisces">Pisces</option>
+    </select>
+    <button onclick="getHoroscope()">Get Horoscope</button>
+    <p id="horoscope">Your daily horoscope will appear here...</p>
 
     <script>
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('horoscope').textContent = data.horoscope;
-            })
-            .catch(error => console.error('Error fetching data:', error));
+        function getHoroscope() {
+            const zodiac = document.getElementById("zodiac").value;
+            fetch(`data.json`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("horoscope").textContent = data.horoscope;
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
     </script>
 </body>
 </html>
