@@ -1,3 +1,14 @@
 {
-  "horoscope": "No data available"
+  "aries": "No data available",
+  "taurus": "No data available",
+  "gemini": "No data available",
+  "cancer": "No data available",
+  "leo": "No data available",
+  "virgo": "No data available",
+  "libra": "No data available",
+  "scorpio": "No data available",
+  "sagittarius": "No data available",
+  "capricorn": "No data available",
+  "aquarius": "No data available",
+  "pisces": "No data available"
 }
