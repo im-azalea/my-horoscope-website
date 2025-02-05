@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v16
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '18'  # Menggunakan Node.js versi 18
 
       - name: Install dependencies
         run: npm install node-fetch@2
@@ -24,7 +24,38 @@ jobs:
       - name: Run update script
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
-        run: node updateData.js
+        run: |
+          cat <<EOF > updateData.js
+          const fetch = require('node-fetch');
+          const fs = require('fs');
+
+          const zodiacSign = "leo";  // Ubah sesuai kebutuhan
+          const url = \`https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=\${zodiacSign}\`;
+
+          const options = {
+              method: 'GET',
+              headers: {
+                  'x-rapidapi-host': 'best-daily-astrology-and-horoscope-api.p.rapidapi.com',
+                  'x-rapidapi-key': process.env.RAPIDAPI_KEY
+              }
+          };
+
+          fetch(url, options)
+              .then(response => response.json())
+              .then(data => {
+                  const updatedData = {
+                      horoscope: data.horoscope || "No data available"
+                  };
+                  fs.writeFileSync('data.json', JSON.stringify(updatedData, null, 2));
+                  console.log("Data updated successfully.");
+              })
+              .catch(error => {
+                  console.error("Error fetching data:", error);
+                  process.exit(1);
+              });
+          EOF
+
+          node updateData.js
 
       - name: Commit and push changes
         run: |
